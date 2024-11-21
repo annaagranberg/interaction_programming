@@ -17,7 +17,7 @@ Card buildCreditCard({
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         image: const DecorationImage(
-          image: AssetImage("assets/images/card_background.png"), // Hardcoded image path
+          image: AssetImage("assets/images/card_background.jpeg"),
           fit: BoxFit.cover,
         ),
       ),
