@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                           ? "Card Holder"
                           : cardHolderNameController.text.toUpperCase(),
                       cardNumber: cardNumberController.text.isEmpty
-                          ? "XXXX XXXX XXXX XXXX"
+                          ? "#### #### #### ####"
                           : cardNumberController.text,
                     ),
                   ),
@@ -72,24 +72,17 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         height: 230,
                         padding: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 22.0),
+                            bottom: 22.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const SizedBox(height: 0),
-                            const Text(
-                              'https://www.paypal.com',
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontSize: 11,
-                              ),
-                            ),
+                            const SizedBox(height: 15),
                             Container(
                               height: 45,
-                              width: MediaQuery.of(context).size.width / 1.2,
+                              width: 600,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.black,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
@@ -97,18 +90,18 @@ class _HomePageState extends State<HomePage> {
                               painter: MyPainter(),
                               child: SizedBox(
                                 height: 35,
-                                width: MediaQuery.of(context).size.width / 1.2,
+                                width: 600,
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       cardCvvController.text.isEmpty
-                                          ? "322"
+                                          ? "CVV"
                                           : cardCvvController.text,
                                       style: const TextStyle(
                                         color: Colors.black,
-                                        fontSize: 21,
+                                        fontSize: 16,
                                       ),
                                     ),
                                   ),
@@ -116,14 +109,12 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            const Text(
-                              'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontSize: 11,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                            Image.asset(
+                      "assets/logos/mastercard.png",
+                      height: 50,
+                      width: 60,
+                    ),
+                    const SizedBox(width: 8),
                           ],
                         ),
                       ),

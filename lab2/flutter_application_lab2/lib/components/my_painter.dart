@@ -7,7 +7,9 @@ class MyPainter extends CustomPainter {
     final rect = Rect.fromLTWH(0, 0, size.width, size.height + 15);
 
     Pattern pattern = const DiagonalStripesThick(
-        bgColor: Color(0xffE6E0D2), fgColor: Color(0xffCAD9E0));
+      bgColor: Colors.white, // Background color changed to white
+      fgColor: Colors.white, // Foreground color changed to white
+    );
 
     pattern.paintOnRect(canvas, size, rect);
   }
