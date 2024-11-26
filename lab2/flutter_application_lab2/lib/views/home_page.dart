@@ -6,8 +6,8 @@ import '../components/card_alert_dialog.dart';
 import '../components/card_input_formatter.dart';
 import '../components/card_month_input_formatter.dart';
 import '../components/master_card.dart';
-import '../components/my_painter.dart';
 import '../constants.dart';
+import '../components/card_detection.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String cardBrand = 'visa'; // Define a variable to store the card brand
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -39,13 +40,7 @@ class _HomePageState extends State<HomePage> {
                   fill: Fill.fillFront,
                   direction: FlipDirection.HORIZONTAL,
                   controller: flipCardController,
-                  onFlip: () {
-                    print('Flip');
-                  },
                   flipOnTouch: false,
-                  onFlipDone: (isFront) {
-                    print('isFront: $isFront');
-                  },
                   front: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: buildCreditCard(
@@ -59,10 +54,11 @@ class _HomePageState extends State<HomePage> {
                       cardNumber: cardNumberController.text.isEmpty
                           ? "#### #### #### ####"
                           : cardNumberController.text,
+                      cardBrand: getCardBrand(cardNumberController.text), 
                     ),
                   ),
                   back: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.all(0.0),
                     child: Card(
                       elevation: 4.0,
                       color: kDarkBlue,
@@ -80,41 +76,50 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 15),
                             Container(
                               height: 45,
-                              width: 600,
+                              width: 500,
                               decoration: BoxDecoration(
                                 color: Colors.black,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                            CustomPaint(
-                              painter: MyPainter(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Container(
+                           
+                              color: Colors.white, // Backaground color
                               child: SizedBox(
                                 height: 35,
-                                width: 600,
+                                width: 500,
                                 child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      cardCvvController.text.isEmpty
-                                          ? "CVV"
-                                          : cardCvvController.text,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                      ),
+                                  child: Text(
+                                    cardCvvController.text.isEmpty ? "CVV  " : cardCvvController.text,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 10,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Image.asset(
-                      "assets/logos/mastercard.png",
-                      height: 50,
-                      width: 60,
-                    ),
-                    const SizedBox(width: 8),
+                          ),
+
+
+                            
+                       const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0), // Adjust padding as needed
+                            child: Align(
+                              alignment: Alignment.centerRight, // Aligns the child to the right
+                              child: Image.asset(
+                              "assets/logos/$cardBrand.png", // Dynamic logo
+                              height: 60,
+                              width: 60,
+                            ),
+                            ),
+                          ),
+
+          
                           ],
                         ),
                       ),
@@ -151,16 +156,16 @@ class _HomePageState extends State<HomePage> {
                     CardInputFormatter(),
                   ],
                   onChanged: (value) {
-                    var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
-                    setState(() {
-                      cardNumberController.value = cardNumberController.value
-                          .copyWith(
-                              text: text,
-                              selection:
-                                  TextSelection.collapsed(offset: text.length),
-                              composing: TextRange.empty);
-                    });
-                  },
+                  var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                  setState(() {
+                    cardNumberController.value = cardNumberController.value.copyWith(
+                      text: text,
+                      selection: TextSelection.collapsed(offset: text.length),
+                      composing: TextRange.empty,
+                    );
+                    cardBrand = getCardBrand(value); // Set the card brand when card number changes
+                  });
+                },
                 ),
               ),
               const SizedBox(height: 12),

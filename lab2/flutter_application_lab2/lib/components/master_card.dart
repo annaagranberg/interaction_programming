@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import '../components/card_detection.dart';
+
+
 
 Card buildCreditCard({
   required String cardNumber,
   required Color color,
   required String cardHolder,
   required String cardExpiration,
+  required String cardBrand,
 }) {
+  String cardBrand = getCardBrand(cardNumber);
+
   return Card(
     elevation: 4.0,
     color: color,
@@ -42,7 +48,7 @@ Card buildCreditCard({
                   ],
                 ),
                 Image.asset(
-                  "assets/logos/mastercard.png",
+                  "assets/logos/$cardBrand.png", // Dynamic logo
                   height: 60,
                   width: 60,
                 ),
@@ -73,6 +79,7 @@ Card buildCreditCard({
     ),
   );
 }
+
 
 Column buildDetailsBlock({required String label, required String value}) {
   return Column(
