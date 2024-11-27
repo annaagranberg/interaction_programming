@@ -17,10 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController cardNumberController = TextEditingController();
-  final TextEditingController cardHolderNameController =
-      TextEditingController();
-  final TextEditingController cardExpiryDateController =
-      TextEditingController();
+  final TextEditingController cardHolderNameController = TextEditingController();
+  final TextEditingController cardExpiryDateController = TextEditingController();
   final TextEditingController cardCvvController = TextEditingController();
 
   final FlipCardController flipCardController = FlipCardController();
@@ -365,6 +363,8 @@ class _HomePageState extends State<HomePage> {
                     cardHolderNameController.clear();
                     cardNumberController.clear();
                     cardBrand = "visa"; 
+                    selectedMonth = null;
+                    selectedYear = null;
                   });
                 },
                 child: Text(
