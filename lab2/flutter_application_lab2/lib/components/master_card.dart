@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/card_detection.dart';
 
-
-
 Card buildCreditCard({
   required String cardNumber,
   required Color color,

@@ -2,7 +2,6 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../components/card_alert_dialog.dart';
 import '../components/card_input_formatter.dart';
 import '../components/card_month_input_formatter.dart';
 import '../components/master_card.dart';
@@ -37,91 +36,97 @@ class _HomePageState extends State<HomePage> {
             children: [
               const SizedBox(height: 30),
               FlipCard(
-                  fill: Fill.fillFront,
-                  direction: FlipDirection.HORIZONTAL,
-                  controller: flipCardController,
-                  flipOnTouch: false,
-                  front: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: buildCreditCard(
-                      color: kDarkBlue,
-                      cardExpiration: cardExpiryDateController.text.isEmpty
-                          ? "08/2022"
-                          : cardExpiryDateController.text,
-                      cardHolder: cardHolderNameController.text.isEmpty
-                          ? "Card Holder"
-                          : cardHolderNameController.text.toUpperCase(),
-                      cardNumber: cardNumberController.text.isEmpty
-                          ? "#### #### #### ####"
-                          : cardNumberController.text,
-                      cardBrand: cardBrand,
-                    ),
+                fill: Fill.fillFront,
+                direction: FlipDirection.HORIZONTAL,
+                controller: flipCardController,
+                flipOnTouch: false,
+                front: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: buildCreditCard(
+                    color: kDarkBlue,
+                    cardExpiration: cardExpiryDateController.text.isEmpty
+                        ? "11/2024"
+                        : cardExpiryDateController.text,
+                    cardHolder: cardHolderNameController.text.isEmpty
+                        ? "Card Holder"
+                        : cardHolderNameController.text.toUpperCase(),
+                    cardNumber: cardNumberController.text.isEmpty
+                        ? "#### #### #### ####"
+                        : cardNumberController.text,
+                    cardBrand: cardBrand,
                   ),
-                  back: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Card(
-                      elevation: 4.0,
-                      color: kDarkBlue,
-                      shape: RoundedRectangleBorder(
+                ),
+                back: Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Card(
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Container(
+                      height: 230,
+                      padding: const EdgeInsets.only(bottom: 22.0),
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14),
+                        image: const DecorationImage(
+                          image:
+                              AssetImage('assets/images/card_background.jpeg'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Container(
-                        height: 230,
-                        padding: const EdgeInsets.only(bottom: 22.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(height: 15),
-                            Container(
-                              height: 45,
-                              width: 500,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(height: 15),
+                          Container(
+                            height: 45,
+                            width: 500,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(5),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Container(
-                                color: Colors.white, // Backaground color
-                                child: SizedBox(
-                                  height: 35,
-                                  width: 500,
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      cardCvvController.text.isEmpty
-                                          ? "CVV  "
-                                          : cardCvvController.text,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                      ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Container(
+                              color: Colors.white,
+                              child: SizedBox(
+                                height: 45,
+                                width: 500,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    cardCvvController.text.isEmpty
+                                        ? "CVV  "
+                                        : cardCvvController.text,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 10,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.all(
-                                  16.0), // Adjust padding as needed
-                              child: Align(
-                                alignment: Alignment
-                                    .centerRight, // Aligns the child to the right
-                                child: Image.asset(
-                                  "assets/logos/$cardBrand.png", // Dynamic logo
-                                  height: 60,
-                                  width: 60,
-                                ),
+                          ),
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Image.asset(
+                                "assets/logos/$cardBrand.png",
+                                height: 60,
+                                width: 60,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  )),
+                  ),
+                ),
+              ),
               const SizedBox(height: 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +260,6 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // CVV Label
                       const Text(
                         'CVV',
                         style: TextStyle(
@@ -265,7 +269,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      // CVV Text Field
                       Container(
                         height: 55,
                         width: MediaQuery.of(context).size.width / 2.4,
@@ -311,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20 * 3),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -323,15 +326,12 @@ class _HomePageState extends State<HomePage> {
                       Size(MediaQuery.of(context).size.width / 1.12, 55),
                 ),
                 onPressed: () {
-                  Future.delayed(const Duration(milliseconds: 300), () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => const CardAlertDialog());
+                  setState(() {
                     cardCvvController.clear();
                     cardExpiryDateController.clear();
                     cardHolderNameController.clear();
                     cardNumberController.clear();
-                    flipCardController.toggleCard();
+                    cardBrand = "visa"; 
                   });
                 },
                 child: Text(
