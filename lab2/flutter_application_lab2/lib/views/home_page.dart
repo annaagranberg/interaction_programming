@@ -3,7 +3,7 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/card_input_formatter.dart';
-import '../components/card_month_input_formatter.dart';
+//import '../components/card_month_input_formatter.dart';
 import '../components/master_card.dart';
 import '../constants.dart';
 import '../components/card_detection.dart';
@@ -26,6 +26,17 @@ class _HomePageState extends State<HomePage> {
   final FlipCardController flipCardController = FlipCardController();
   String cardBrand = "visa";
 
+  String? selectedMonth;
+  String? selectedYear;
+
+  final List<String> months = [
+    for (var i = 1; i <= 12; i++) i.toString().padLeft(2, '0')
+  ];
+  final List<String> years = [
+  for (var i = DateTime.now().year; i < DateTime.now().year + 10; i++)
+    (i % 100).toString().padLeft(2, '0')
+];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,26 +47,25 @@ class _HomePageState extends State<HomePage> {
             children: [
               const SizedBox(height: 30),
               FlipCard(
-                fill: Fill.fillFront,
-                direction: FlipDirection.HORIZONTAL,
-                controller: flipCardController,
-                flipOnTouch: false,
-                front: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: buildCreditCard(
-                    color: kDarkBlue,
-                    cardExpiration: cardExpiryDateController.text.isEmpty
-                        ? "11/2024"
-                        : cardExpiryDateController.text,
-                    cardHolder: cardHolderNameController.text.isEmpty
-                        ? "Card Holder"
-                        : cardHolderNameController.text.toUpperCase(),
-                    cardNumber: cardNumberController.text.isEmpty
-                        ? "#### #### #### ####"
-                        : cardNumberController.text,
-                    cardBrand: cardBrand,
+                  fill: Fill.fillFront,
+                  direction: FlipDirection.HORIZONTAL,
+                  controller: flipCardController,
+                  flipOnTouch: true,
+                  front: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: buildCreditCard(
+                      color: kDarkBlue,
+                      cardHolder: cardHolderNameController.text.isEmpty
+                          ? "Card Holder"
+                          : cardHolderNameController.text.toUpperCase(),
+                      cardNumber: cardNumberController.text.isEmpty
+                          ? "#### #### #### ####"
+                          : cardNumberController.text,
+                      cardBrand: cardBrand,
+                      month: selectedMonth ?? "MM",
+                      year: selectedYear ?? "YY",
+                    ),
                   ),
-                ),
                 back: Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: Card(
@@ -213,49 +223,72 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Expiry Date',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width / 2.4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: TextFormField(
-                      controller: cardExpiryDateController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  const SizedBox(height: 40),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Expiry Date',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4),
-                        CardDateInputFormatter(),
-                      ],
-                      onChanged: (value) {
-                        var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
-                        setState(() {
-                          cardExpiryDateController.value =
-                              cardExpiryDateController.value.copyWith(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                      offset: text.length),
-                                  composing: TextRange.empty);
-                        });
-                      },
-                    ),
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          //Månad
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: DropdownButton<String>(
+                              hint: const Text('MM'),
+                              value: selectedMonth,
+                              items: months.map((month) => DropdownMenuItem<String>(
+                                value: month,
+                                child: Text(month),
+                              )).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedMonth = value;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          //År
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: DropdownButton<String>(
+                              hint: const Text('YY'),
+                              value: selectedYear,
+                              items: years.map((year) => DropdownMenuItem<String>(
+                                value: year,
+                                child: Text(year),
+                              )).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedYear = value;
+                                });
+                              },
+                            ),
+                          )
+                        ],
+                      )
+                    ],
                   ),
+
                   const SizedBox(width: 14),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

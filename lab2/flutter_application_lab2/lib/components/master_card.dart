@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import '../components/card_detection.dart';
+//import '../components/card_detection.dart';
 
 Card buildCreditCard({
   required String cardNumber,
   required Color color,
   required String cardHolder,
-  required String cardExpiration,
   required String cardBrand,
+  required String month,
+  required String year,
 }) {
-  String cardBrand = getCardBrand(cardNumber);
+  final String cardExpiration = month.isEmpty || year.isEmpty
+      ? "MM/YY"
+      : "$month/$year";
 
   return Card(
     elevation: 4.0,
@@ -77,6 +80,7 @@ Card buildCreditCard({
     ),
   );
 }
+
 
 
 Column buildDetailsBlock({required String label, required String value}) {
