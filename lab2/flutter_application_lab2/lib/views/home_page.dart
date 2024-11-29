@@ -3,7 +3,6 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/card_input_formatter.dart';
-//import '../components/card_month_input_formatter.dart';
 import '../components/master_card.dart';
 import '../constants.dart';
 import '../components/card_detection.dart';
@@ -17,11 +16,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController cardNumberController = TextEditingController();
-  final TextEditingController cardHolderNameController = TextEditingController();
-  final TextEditingController cardExpiryDateController = TextEditingController();
+  final TextEditingController cardHolderNameController =
+      TextEditingController();
+  final TextEditingController cardExpiryDateController =
+      TextEditingController();
   final TextEditingController cardCvvController = TextEditingController();
 
   final FlipCardController flipCardController = FlipCardController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String cardBrand = "visa";
 
   String? selectedMonth;
@@ -31,39 +33,41 @@ class _HomePageState extends State<HomePage> {
     for (var i = 1; i <= 12; i++) i.toString().padLeft(2, '0')
   ];
   final List<String> years = [
-  for (var i = DateTime.now().year; i < DateTime.now().year + 10; i++)
-    (i % 100).toString().padLeft(2, '0')
-];
+    for (var i = DateTime.now().year; i < DateTime.now().year + 10; i++)
+      (i % 100).toString().padLeft(2, '0')
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+            child: Form(
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 30),
               FlipCard(
-                  fill: Fill.fillFront,
-                  direction: FlipDirection.HORIZONTAL,
-                  controller: flipCardController,
-                  flipOnTouch: true,
-                  front: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: buildCreditCard(
-                      color: kDarkBlue,
-                      cardHolder: cardHolderNameController.text.isEmpty
-                          ? "Card Holder"
-                          : cardHolderNameController.text.toUpperCase(),
-                      cardNumber: cardNumberController.text.isEmpty
-                          ? "#### #### #### ####"
-                          : cardNumberController.text,
-                      cardBrand: cardBrand,
-                      month: selectedMonth ?? "MM",
-                      year: selectedYear ?? "YY",
-                    ),
+                fill: Fill.fillFront,
+                direction: FlipDirection.HORIZONTAL,
+                controller: flipCardController,
+                flipOnTouch: true,
+                front: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: buildCreditCard(
+                    color: kDarkBlue,
+                    cardHolder: cardHolderNameController.text.isEmpty
+                        ? "Card Holder"
+                        : cardHolderNameController.text.toUpperCase(),
+                    cardNumber: cardNumberController.text.isEmpty
+                        ? "#### #### #### ####"
+                        : cardNumberController.text,
+                    cardBrand: cardBrand,
+                    month: selectedMonth ?? "MM",
+                    year: selectedYear ?? "YY",
                   ),
+                ),
                 back: Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: Card(
@@ -166,9 +170,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(16),
+                        LengthLimitingTextInputFormatter(
+                            cardBrand == "amex" ? 15 : 16),
                         CardInputFormatter(),
                       ],
+                      validator: (value) {
+                        if (cardBrand == "amex" && value!.length < 15) {
+                          return 'Please enter a valid card number';
+                        }
+                        if (cardBrand != "amex" && value!.length < 16) {
+                          return 'Please enter a valid card number';
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                         setState(() {
@@ -248,10 +262,12 @@ class _HomePageState extends State<HomePage> {
                             child: DropdownButton<String>(
                               hint: const Text('MM'),
                               value: selectedMonth,
-                              items: months.map((month) => DropdownMenuItem<String>(
-                                value: month,
-                                child: Text(month),
-                              )).toList(),
+                              items: months
+                                  .map((month) => DropdownMenuItem<String>(
+                                        value: month,
+                                        child: Text(month),
+                                      ))
+                                  .toList(),
                               onChanged: (value) {
                                 setState(() {
                                   selectedMonth = value;
@@ -271,10 +287,12 @@ class _HomePageState extends State<HomePage> {
                             child: DropdownButton<String>(
                               hint: const Text('YY'),
                               value: selectedYear,
-                              items: years.map((year) => DropdownMenuItem<String>(
-                                value: year,
-                                child: Text(year),
-                              )).toList(),
+                              items: years
+                                  .map((year) => DropdownMenuItem<String>(
+                                        value: year,
+                                        child: Text(year),
+                                      ))
+                                  .toList(),
                               onChanged: (value) {
                                 setState(() {
                                   selectedYear = value;
@@ -357,15 +375,29 @@ class _HomePageState extends State<HomePage> {
                       Size(MediaQuery.of(context).size.width / 1.12, 55),
                 ),
                 onPressed: () {
-                  setState(() {
-                    cardCvvController.clear();
-                    cardExpiryDateController.clear();
-                    cardHolderNameController.clear();
-                    cardNumberController.clear();
-                    cardBrand = "visa"; 
-                    selectedMonth = null;
-                    selectedYear = null;
-                  });
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      cardCvvController.clear();
+                      cardExpiryDateController.clear();
+                      cardHolderNameController.clear();
+                      cardNumberController.clear();
+                      cardBrand = "visa";
+                      selectedMonth = null;
+                      selectedYear = null;
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Card added successfully!'),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please enter a valid xomehting!'),
+                      ),
+                    );
+                  }
                 },
                 child: Text(
                   'Add Card'.toUpperCase(),
@@ -377,7 +409,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-        ),
+        )),
       ),
     );
   }
