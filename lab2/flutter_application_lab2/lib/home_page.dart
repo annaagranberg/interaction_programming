@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'components/card_input_formatter.dart';
 import 'components/card_detection.dart';
-import 'components/flip_card.dart';
+import 'components/card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(
                               cardBrand == "amex" ? 15 : 16),
-                          //CardInputFormatter(),
+                          CardInputFormatter(),
                         ],
                         validator: (value) {
                           if (cardBrand == "amex" && value!.length < 15) {

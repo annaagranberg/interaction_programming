@@ -122,7 +122,7 @@ class FlipCardComponent extends StatelessWidget {
         month.isEmpty || year.isEmpty ? "MM/YY" : "$month/$year";
 
     return Card(
-      elevation: 4.0,
+      elevation: 20.0,
       color: color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
@@ -158,7 +158,7 @@ class FlipCardComponent extends StatelessWidget {
                     ],
                   ),
                   Image.asset(
-                    "assets/logos/$cardBrand.png", // Dynamic logo
+                    "assets/logos/$cardBrand.png", 
                     height: 60,
                     width: 60,
                   ),

@@ -16,5 +16,5 @@ String getCardBrand(String cardNumber) {
   } else if (RegExp(r'^9792').hasMatch(cardNumber)) {
     return "troy";
   }
-  return "visa"; // Fallback option
+  return "visa";
 }
