@@ -1,11 +1,9 @@
-import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../components/card_input_formatter.dart';
-import '../components/master_card.dart';
-import '../constants.dart';
-import '../components/card_detection.dart';
+import 'components/card_input_formatter.dart';
+import 'components/card_detection.dart';
+import 'components/flip_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,15 +13,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController cardNumberController = TextEditingController();
-  final TextEditingController cardHolderNameController =
-      TextEditingController();
-  final TextEditingController cardExpiryDateController =
-      TextEditingController();
-  final TextEditingController cardCvvController = TextEditingController();
 
+  final TextEditingController cardNumberController = TextEditingController();
+  final TextEditingController cardHolderNameController = TextEditingController();
+  final TextEditingController cardExpiryDateController = TextEditingController();
+  final TextEditingController cardCvvController = TextEditingController();
   final FlipCardController flipCardController = FlipCardController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   String cardBrand = "visa";
 
   String? selectedMonth;
@@ -48,96 +45,20 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 30),
-              FlipCard(
-                fill: Fill.fillFront,
-                direction: FlipDirection.HORIZONTAL,
-                controller: flipCardController,
-                flipOnTouch: true,
-                front: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: buildCreditCard(
-                    color: kDarkBlue,
-                    cardHolder: cardHolderNameController.text.isEmpty
-                        ? "Card Holder"
-                        : cardHolderNameController.text.toUpperCase(),
-                    cardNumber: cardNumberController.text.isEmpty
-                        ? "#### #### #### ####"
-                        : cardNumberController.text,
-                    cardBrand: cardBrand,
-                    month: selectedMonth ?? "MM",
-                    year: selectedYear ?? "YY",
-                  ),
-                ),
-                back: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Card(
-                    elevation: 4.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Container(
-                      height: 230,
-                      padding: const EdgeInsets.only(bottom: 22.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        image: const DecorationImage(
-                          image:
-                              AssetImage('assets/images/card_background.jpeg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(height: 15),
-                          Container(
-                            height: 45,
-                            width: 500,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Container(
-                              color: Colors.white,
-                              child: SizedBox(
-                                height: 45,
-                                width: 500,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    cardCvvController.text.isEmpty
-                                        ? "CVV  "
-                                        : cardCvvController.text,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Image.asset(
-                                "assets/logos/$cardBrand.png",
-                                height: 60,
-                                width: 60,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              FlipCardComponent(
+                flipCardController: flipCardController,
+                cardBrand: cardBrand,
+                cardHolder: cardHolderNameController.text.isEmpty
+                    ? "Card Holder"
+                    : cardHolderNameController.text.toUpperCase(),
+                cardNumber: cardNumberController.text.isEmpty
+                    ? "#### #### #### ####"
+                    : cardNumberController.text,
+                month: selectedMonth ?? "MM",
+                year: selectedYear ?? "YY",
+                cvv: cardCvvController.text.isEmpty
+                    ? "CVV"
+                    : cardCvvController.text,
               ),
               const SizedBox(height: 40),
               Padding(
@@ -145,6 +66,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     // Card Number Field
                     const Text(
                       'Card Number',
@@ -174,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(
                               cardBrand == "amex" ? 15 : 16),
-                          CardInputFormatter(),
+                          //CardInputFormatter(),
                         ],
                         validator: (value) {
                           if (cardBrand == "amex" && value!.length < 15) {
@@ -262,6 +184,7 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+
                             // Month Dropdown
                             Expanded(
                               flex: 2,
@@ -291,6 +214,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 10),
+
                             // Year Dropdown
                             Expanded(
                               flex: 2,
@@ -320,6 +244,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 10),
+
                             // CVV Field
                             Expanded(
                               flex: 3,
