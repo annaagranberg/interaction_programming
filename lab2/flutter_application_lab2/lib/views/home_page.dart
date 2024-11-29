@@ -140,228 +140,243 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 40),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Card Number Field
-                  const Text(
-                    'Card Number',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width / 1.12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: TextFormField(
-                      controller: cardNumberController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Card Number Field
+                    const Text(
+                      'Card Number',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(
-                            cardBrand == "amex" ? 15 : 16),
-                        CardInputFormatter(),
-                      ],
-                      validator: (value) {
-                        if (cardBrand == "amex" && value!.length < 15) {
-                          return 'Please enter a valid card number';
-                        }
-                        if (cardBrand != "amex" && value!.length < 16) {
-                          return 'Please enter a valid card number';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
-                        setState(() {
-                          cardNumberController.value =
-                              cardNumberController.value.copyWith(
-                            text: text,
-                            selection:
-                                TextSelection.collapsed(offset: text.length),
-                            composing: TextRange.empty,
-                          );
-                          cardBrand = getCardBrand(text);
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Card Name',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width / 1.12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: TextFormField(
-                      controller: cardHolderNameController,
-                      keyboardType: TextInputType.name,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    const SizedBox(height: 5),
+                    Container(
+                      height: 55,
+                      width: MediaQuery.of(context).size.width / 1.12,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          cardHolderNameController.value =
-                              cardHolderNameController.value.copyWith(
-                                  text: value,
-                                  selection: TextSelection.collapsed(
-                                      offset: value.length),
-                                  composing: TextRange.empty);
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Expiry Date',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                      child: TextFormField(
+                        controller: cardNumberController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          //Månad
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: DropdownButton<String>(
-                              hint: const Text('MM'),
-                              value: selectedMonth,
-                              items: months
-                                  .map((month) => DropdownMenuItem<String>(
-                                        value: month,
-                                        child: Text(month),
-                                      ))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedMonth = value;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          //År
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: DropdownButton<String>(
-                              hint: const Text('YY'),
-                              value: selectedYear,
-                              items: years
-                                  .map((year) => DropdownMenuItem<String>(
-                                        value: year,
-                                        child: Text(year),
-                                      ))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedYear = value;
-                                });
-                              },
-                            ),
-                          )
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(
+                              cardBrand == "amex" ? 15 : 16),
+                          CardInputFormatter(),
                         ],
-                      )
-                    ],
-                  ),
-
-                  const SizedBox(width: 14),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'CVV',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        validator: (value) {
+                          if (cardBrand == "amex" && value!.length < 15) {
+                            return 'Please enter a valid card number';
+                          }
+                          if (cardBrand != "amex" && value!.length < 16) {
+                            return 'Please enter a valid card number';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          var text =
+                              value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                          setState(() {
+                            cardNumberController.value =
+                                cardNumberController.value.copyWith(
+                              text: text,
+                              selection:
+                                  TextSelection.collapsed(offset: text.length),
+                              composing: TextRange.empty,
+                            );
+                            cardBrand = getCardBrand(text);
+                          });
+                        },
                       ),
-                      const SizedBox(height: 5),
-                      Container(
-                        height: 55,
-                        width: MediaQuery.of(context).size.width / 2.4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(15),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Card Name',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Container(
+                      height: 55,
+                      width: MediaQuery.of(context).size.width / 1.12,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: TextFormField(
+                        controller: cardHolderNameController,
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                         ),
-                        child: TextFormField(
-                          controller: cardCvvController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a valid name';
+                          } else if (RegExp(r'\d').hasMatch(value)) {
+                            return 'Name cannot contain numbers';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            cardHolderNameController.value =
+                                cardHolderNameController.value.copyWith(
+                                    text: value,
+                                    selection: TextSelection.collapsed(
+                                        offset: value.length),
+                                    composing: TextRange.empty);
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Expiry Date & CVV',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(3),
-                          ],
-                          onTap: () {
-                            setState(() {
-                              Future.delayed(const Duration(milliseconds: 300),
-                                  () {
-                                flipCardController.toggleCard();
-                              });
-                            });
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              int length = value.length;
-                              if (length == 4 || length == 9 || length == 14) {
-                                cardNumberController.text = '$value ';
-                                cardNumberController.selection =
-                                    TextSelection.fromPosition(
-                                  TextPosition(offset: value.length + 1),
-                                );
-                              }
-                            });
-                          },
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            // Month Dropdown
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                height: 55,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: DropdownButton<String>(
+                                  hint: const Text('MM'),
+                                  value: selectedMonth,
+                                  items: months
+                                      .map((month) => DropdownMenuItem<String>(
+                                            value: month,
+                                            child: Text(month),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedMonth = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            // Year Dropdown
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                height: 55,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: DropdownButton<String>(
+                                  hint: const Text('YY'),
+                                  value: selectedYear,
+                                  items: years
+                                      .map((year) => DropdownMenuItem<String>(
+                                            value: year,
+                                            child: Text(year),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedYear = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            // CVV Field
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                height: 55,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: TextFormField(
+                                  controller: cardCvvController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 15),
+                                    hintText: 'CVV',
+                                  ),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(3),
+                                  ],
+                                  onTap: () {
+                                    setState(() {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 300),
+                                          () {
+                                        flipCardController.toggleCard();
+                                      });
+                                    });
+                                  },
+                                  validator: (value) {
+                                    if (value!.length < 3) {
+                                      return 'Not valid CVV';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (value) {
+                                    setState(() {
+                                      cardCvvController.value =
+                                          cardCvvController.value.copyWith(
+                                        text: value,
+                                        selection: TextSelection.collapsed(
+                                            offset: value.length),
+                                        composing: TextRange.empty,
+                                      );
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -375,7 +390,14 @@ class _HomePageState extends State<HomePage> {
                       Size(MediaQuery.of(context).size.width / 1.12, 55),
                 ),
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (!_isFutureDate(selectedMonth, selectedYear)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please enter a valid expiry date'),
+                      ),
+                    );
+                    return;
+                  } else if (_formKey.currentState!.validate()) {
                     setState(() {
                       cardCvvController.clear();
                       cardExpiryDateController.clear();
@@ -389,12 +411,6 @@ class _HomePageState extends State<HomePage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Card added successfully!'),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a valid xomehting!'),
                       ),
                     );
                   }
@@ -413,4 +429,13 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+bool _isFutureDate(String? month, String? year) {
+  if (month == null || year == null) return false;
+
+  final now = DateTime.now();
+  final expiryDate = DateTime(int.parse('20$year'), int.parse(month));
+
+  return expiryDate.isAfter(now);
 }
