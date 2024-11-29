@@ -110,6 +110,8 @@ class FlipCardComponent extends StatelessWidget {
     );
   }
 
+
+/// FRONT OF THE CARD ///
   Card _buildCreditCard({
     required String cardNumber,
     required Color color,

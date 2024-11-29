@@ -19,11 +19,12 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController cardExpiryDateController = TextEditingController();
   final TextEditingController cardCvvController = TextEditingController();
   final FlipCardController flipCardController = FlipCardController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String cardBrand = "visa";
 
-  String? selectedMonth;
+  String? selectedMonth; // ? is a null-aware operator. Prevent is from craching if null???
   String? selectedYear;
 
   final List<String> months = [
@@ -37,8 +38,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: SafeArea( //avoid intrusions by the operating system
+        child: SingleChildScrollView( //A box in which a single widget can be scrolled.
             child: Form(
           key: _formKey,
           child: Column(
@@ -66,7 +67,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // Card Number Field
                     const Text(
                       'Card Number',
