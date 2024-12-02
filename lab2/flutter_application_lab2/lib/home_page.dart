@@ -1,9 +1,9 @@
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'components/card.dart';
 import 'components/card_input_formatter.dart';
 import 'components/card_detection.dart';
-import 'components/card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -36,142 +36,131 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea( //avoid intrusions by the operating system
-        child: SingleChildScrollView( //A box in which a single widget can be scrolled.
+  @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: Stack(
+        children: [
+          // Form content
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 300),
             child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              FlipCardComponent(
-                flipCardController: flipCardController,
-                cardBrand: cardBrand,
-                cardHolder: cardHolderNameController.text.isEmpty
-                    ? "Card Holder"
-                    : cardHolderNameController.text.toUpperCase(),
-                cardNumber: cardNumberController.text.isEmpty
-                    ? "#### #### #### ####"
-                    : cardNumberController.text,
-                month: selectedMonth ?? "MM",
-                year: selectedYear ?? "YY",
-                cvv: cardCvvController.text.isEmpty
-                    ? "CVV"
-                    : cardCvvController.text,
-              ),
-              const SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Card Number Field
-                    const Text(
-                      'Card Number',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Container(
-                      height: 55,
-                      width: MediaQuery.of(context).size.width / 1.12,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: TextFormField(
-                        controller: cardNumberController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(
-                              cardBrand == "amex" ? 15 : 16),
-                          CardInputFormatter(),
-                        ],
-                        validator: (value) {
-                          if (cardBrand == "amex" && value!.length < 15) {
-                            return 'Please enter a valid card number';
-                          }
-                          if (cardBrand != "amex" && value!.length < 16) {
-                            return 'Please enter a valid card number';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          var text =
-                              value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
-                          setState(() {
-                            cardNumberController.value =
-                                cardNumberController.value.copyWith(
-                              text: text,
-                              selection:
-                                  TextSelection.collapsed(offset: text.length),
-                              composing: TextRange.empty,
-                            );
-                            cardBrand = getCardBrand(text);
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Card Name',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Container(
-                      height: 55,
-                      width: MediaQuery.of(context).size.width / 1.12,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: TextFormField(
-                        controller: cardHolderNameController,
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a valid name';
-                          } else if (RegExp(r'\d').hasMatch(value)) {
-                            return 'Name cannot contain numbers';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          setState(() {
-                            cardHolderNameController.value =
-                                cardHolderNameController.value.copyWith(
-                                    text: value,
-                                    selection: TextSelection.collapsed(
-                                        offset: value.length),
-                                    composing: TextRange.empty);
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    Column(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Card Number Field
+                        const Text(
+                          'Card Number',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Container(
+                          height: 55,
+                          width: MediaQuery.of(context).size.width / 1.12,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: TextFormField(
+                            controller: cardNumberController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(
+                                  cardBrand == "amex" ? 15 : 16),
+                              CardInputFormatter(cardType: cardBrand),
+                            ],
+                            validator: (value) {
+                              if (cardBrand == "amex" && value!.length < 15) {
+                                return 'Please enter a valid card number';
+                              }
+                              if (cardBrand != "amex" &&
+                                  value!.length < 16) {
+                                return 'Please enter a valid card number';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              var text =
+                                  value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                              setState(() {
+                                cardNumberController.value =
+                                    cardNumberController.value.copyWith(
+                                  text: text,
+                                  selection: TextSelection.collapsed(
+                                      offset: text.length),
+                                  composing: TextRange.empty,
+                                );
+                                cardBrand = getCardBrand(text);
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Card Name',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Container(
+                          height: 55,
+                          width: MediaQuery.of(context).size.width / 1.12,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: TextFormField(
+                            controller: cardHolderNameController,
+                            keyboardType: TextInputType.name,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                            ),
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(20),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a valid name';
+                              } else if (RegExp(r'\d').hasMatch(value)) {
+                                return 'Name cannot contain numbers';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                cardHolderNameController.value =
+                                    cardHolderNameController.value.copyWith(
+                                        text: value,
+                                        selection: TextSelection.collapsed(
+                                            offset: value.length),
+                                        composing: TextRange.empty);
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 40),
                         const Text(
                           'Expiry Date & CVV',
                           style: TextStyle(
@@ -184,7 +173,6 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-
                             // Month Dropdown
                             Expanded(
                               flex: 2,
@@ -214,7 +202,6 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 10),
-
                             // Year Dropdown
                             Expanded(
                               flex: 2,
@@ -244,7 +231,6 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 10),
-
                             // CVV Field
                             Expanded(
                               flex: 3,
@@ -298,63 +284,83 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            minimumSize:
+                                Size(MediaQuery.of(context).size.width / 1.12, 55),
+                          ),
+                          onPressed: () {
+                            if (!_isFutureDate(selectedMonth, selectedYear)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please enter a valid expiry date'),
+                                ),
+                              );
+                              return;
+                            } else if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                cardCvvController.clear();
+                                cardHolderNameController.clear();
+                                cardNumberController.clear();
+                                cardBrand = "visa";
+                                selectedMonth = null;
+                                selectedYear = null;
+                              });
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Card added successfully!'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text(
+                            'Add Card'.toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
                   ),
-                  minimumSize:
-                      Size(MediaQuery.of(context).size.width / 1.12, 55),
-                ),
-                onPressed: () {
-                  if (!_isFutureDate(selectedMonth, selectedYear)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a valid expiry date'),
-                      ),
-                    );
-                    return;
-                  } else if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      cardCvvController.clear();
-                      cardExpiryDateController.clear();
-                      cardHolderNameController.clear();
-                      cardNumberController.clear();
-                      cardBrand = "visa";
-                      selectedMonth = null;
-                      selectedYear = null;
-                    });
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Card added successfully!'),
-                      ),
-                    );
-                  }
-                },
-                child: Text(
-                  'Add Card'.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        )),
+          // Floating Card
+          Positioned(
+            top: 50,
+            left: 0,
+            right: 0,
+            child: FlipCardComponent(
+              flipCardController: flipCardController,
+              cardBrand: cardBrand,
+              cardHolder: cardHolderNameController.text.isEmpty
+                  ? "Card Holder"
+                  : cardHolderNameController.text.toUpperCase(),
+              cardNumber: cardNumberController.text.padRight(16, '#'),
+              month: selectedMonth ?? "MM",
+              year: selectedYear ?? "YY",
+              cvv: cardCvvController.text.isEmpty ? "CVV" : cardCvvController.text,
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
+
+}
+
+
 
 bool _isFutureDate(String? month, String? year) {
   if (month == null || year == null) return false;
