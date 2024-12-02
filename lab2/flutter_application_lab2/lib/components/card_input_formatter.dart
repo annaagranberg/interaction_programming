@@ -12,7 +12,7 @@ class CardInputFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    String inputData = newValue.text.replaceAll(" ", ""); // Remove existing spaces
+    String inputData = newValue.text.replaceAll(" ", "");
     StringBuffer buffer = StringBuffer();
 
     List<int> groupings = cardType == 'amex' ? [4, 6, 5] : [4, 4, 4, 4];
