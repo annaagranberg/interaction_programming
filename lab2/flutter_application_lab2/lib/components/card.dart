@@ -123,6 +123,7 @@ class FlipCardComponent extends StatelessWidget {
     final String cardExpiration =
         month.isEmpty || year.isEmpty ? "MM/YY" : "$month/$year";
 
+    String formattedCardNumber = formatCardNumber(cardNumber, cardBrand);
     return Card(
       elevation: 20.0,
       color: color,
@@ -168,7 +169,7 @@ class FlipCardComponent extends StatelessWidget {
               ),
             ),
             Text(
-              cardNumber,
+              formattedCardNumber,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 21,
@@ -216,4 +217,33 @@ class FlipCardComponent extends StatelessWidget {
       ],
     );
   }
+}
+
+String formatCardNumber(String cardNumber, String cardBrand) {
+  // Define groupings based on card brand
+  List<int> groupings = cardBrand == 'amex' ? [4, 6, 5] : [4, 4, 4, 4];
+  
+  // Remove any existing spaces
+  String cleanedNumber = cardNumber.replaceAll(' ', '');
+  
+  // Pad the cleaned number with placeholders
+  String paddedNumber = cleanedNumber.padRight(
+    groupings.reduce((value, element) => value + element),
+    '#',
+  );
+
+  StringBuffer buffer = StringBuffer();
+  int currentIndex = 0;
+
+  // Apply groupings and format
+  for (int group in groupings) {
+    if (currentIndex >= paddedNumber.length) break;
+    int endIndex = currentIndex + group;
+    if (endIndex > paddedNumber.length) endIndex = paddedNumber.length;
+    buffer.write(paddedNumber.substring(currentIndex, endIndex));
+    if (endIndex < paddedNumber.length) buffer.write(" ");
+    currentIndex = endIndex;
+  }
+
+  return buffer.toString();
 }

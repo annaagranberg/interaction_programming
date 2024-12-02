@@ -346,7 +346,9 @@ Widget build(BuildContext context) {
               cardHolder: cardHolderNameController.text.isEmpty
                   ? "Card Holder"
                   : cardHolderNameController.text.toUpperCase(),
-              cardNumber: cardNumberController.text.padRight(16, '#'),
+              cardNumber: cardNumberController.text.isEmpty
+                  ? "#### #### #### ####"
+                  : formatCardNumber(cardNumberController.text, cardBrand),
               month: selectedMonth ?? "MM",
               year: selectedYear ?? "YY",
               cvv: cardCvvController.text.isEmpty ? "CVV" : cardCvvController.text,
