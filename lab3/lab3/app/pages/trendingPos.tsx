@@ -1,71 +1,110 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-import DropdownComponent from './dropDown';
+import DropdownComponentItem from './dropDownItem';
+import DropdownComponentYear from './dropDownYear';
+import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-// GraphQL query with a variable for the language
 const GET_TRENDING_REPOS = gql`
-  query GetTrendingRepos($selectedLanguage: String!) {
-    search(query: $selectedLanguage, type: REPOSITORY, first: 10) {
-      edges {
-        node {
-          ... on Repository {
-            name
-            owner {
-              login
-            }
-            stargazerCount
-            createdAt
-            forks {
-              totalCount
-            }
-            primaryLanguage {
-              name
-            }
+query GetTrendingRepos($selectedLanguage: String!) {
+  search(query: $selectedLanguage, type: REPOSITORY, first: 10) {
+    edges {
+      node {
+        ... on Repository {
+          name
+          owner {
+            login
           }
+          stargazerCount
+          createdAt
+          forks {
+            totalCount
+          }
+          primaryLanguage {
+            name
+          }
+          licenseInfo {
+            name
+          }
+        watchers {
+            totalCount
+        }
         }
       }
     }
   }
+}
 `;
+
 
 const TrendingRepos = () => {
 
+    type RootStackParamList = {
+        TrendingRepos: undefined;
+        RepoDetails: { repo: any };
+    };
+
+    const Stack = createStackNavigator<RootStackParamList>();
+
+    type TrendingReposScreenProp = StackNavigationProp<RootStackParamList, 'TrendingRepos'>;
+    const navigation = useNavigation<TrendingReposScreenProp>();
+
     const [selectedLanguage, setSelectedLanguage] = useState<string>('language:C++ sort:stars');
+    const [selectedYear, setSelectedYear] = useState<string>('2024');
+
+    const handleYearChange = (year: string) => {
+        setSelectedYear(year);
+    };
 
     const handleLanguageChange = (language: string) => {
         setSelectedLanguage(language);
     };
 
     const { loading, error, data } = useQuery(GET_TRENDING_REPOS, {
-        variables: { selectedLanguage },
-        fetchPolicy: 'network-only', // Forces a network request for every variable change
+        variables: {
+            selectedLanguage: `${selectedLanguage} created:>=${selectedYear}-01-01 created:<=${selectedYear}-12-31`,
+        },
+        fetchPolicy: 'network-only',
     });
-    
+
 
     if (loading) return <ActivityIndicator size="large" color="black" />;
     if (error) return <Text>Error: {error.message}</Text>;
 
     return (
         <View>
-            <DropdownComponent onValueChange={handleLanguageChange} />
+            <DropdownComponentItem onValueChange={handleLanguageChange} />
+            <DropdownComponentYear onValueChange={handleYearChange} />
             <FlatList
                 data={data?.search?.edges || []}
                 keyExtractor={(item) => item.node.name}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <View style={styles.cardContent}>
-                            <Text style={styles.text}><Text style={styles.textBold}>Name:</Text> {item.node.name}</Text>
-                            <Text style={styles.text}><Text style={styles.textBold}>Owner:</Text> {item.node.owner.login}</Text>
-                            <Text style={styles.text}><Text style={styles.textBold}>Stars:</Text> {item.node.stargazerCount}</Text>
-                            <Text style={styles.text}><Text style={styles.textBold}>Created At:</Text> {item.node.createdAt}</Text>
-                            <Text style={styles.text}><Text style={styles.textBold}>Forks:</Text> {item.node.forks.totalCount}</Text>
+                            <Text style={styles.title}> {item.node.name}</Text>
+                            <View style={styles.infoRow}>
+                <Icon name="star" size={20} color="#FFD700" />
+                <Text style={styles.text}>{item.node.stargazerCount}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+                <Icon name="code-fork" size={20} color="black" />
+                <Text style={styles.text}>{item.node.forks.totalCount}</Text>
+            </View>
                             <Text style={styles.text}><Text style={styles.textBold}>Primary Language:</Text> {item.node.primaryLanguage?.name || "N/A"}</Text>
-                            <View style={styles.readMore}>
-                                <TouchableOpacity onPress={() => console.log('Button pressed')}>
-                                    <Text style={styles.readMoreText}>Read more</Text>
-                                </TouchableOpacity>
-                            </View>
+                            <TouchableOpacity
+                                style={styles.readMore}
+                                onPress={() =>
+                                    navigation.navigate('RepoDetails', {
+                                        repo: item.node,
+                                    })
+                                }
+                            >
+                                <Text style={styles.readMoreText}>Read more</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 )}
@@ -93,6 +132,11 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.5,
+    },
+    infoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
     },
     cardContent: {
         flex: 1,
@@ -128,6 +172,20 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 15,
         fontFamily: 'sans-serif',
+    },
+    textInput: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        margin: 10,
+        padding: 10,
+    },
+    title: {
+        color: 'black',
+        fontSize: 20,
+        fontFamily: 'sans-serif',
+        marginBottom: 5,
+        fontWeight: 'bold',
     },
 });
 
