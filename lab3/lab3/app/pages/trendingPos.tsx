@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-import DropdownComponentItem from './dropDownItem';
-import DropdownComponentYear from './dropDownYear';
+import DropdownComponent from './dropDown';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -76,8 +75,10 @@ const TrendingRepos = () => {
 
     return (
         <View>
-            <DropdownComponentItem onValueChange={handleLanguageChange} />
-            <DropdownComponentYear onValueChange={handleYearChange} />
+            <View style={styles.filterRow}>
+                <DropdownComponent onValueChange={handleYearChange} datasetChoice={1} />
+                <DropdownComponent onValueChange={handleLanguageChange} datasetChoice={2} />
+            </View>
             <FlatList
                 data={data?.search?.edges || []}
                 keyExtractor={(item) => item.node.name}
@@ -86,14 +87,14 @@ const TrendingRepos = () => {
                         <View style={styles.cardContent}>
                             <Text style={styles.title}> {item.node.name}</Text>
                             <View style={styles.infoRow}>
-                <Icon name="star" size={20} color="#FFD700" />
-                <Text style={styles.text}>{item.node.stargazerCount}</Text>
-            </View>
+                                <Icon name="star" size={20} color="#FFD700" />
+                                <Text style={styles.text}>{item.node.stargazerCount}</Text>
+                            </View>
 
-            <View style={styles.infoRow}>
-                <Icon name="code-fork" size={20} color="black" />
-                <Text style={styles.text}>{item.node.forks.totalCount}</Text>
-            </View>
+                            <View style={styles.infoRow}>
+                                <Icon name="code-fork" size={20} color="black" />
+                                <Text style={styles.text}>{item.node.forks.totalCount}</Text>
+                            </View>
                             <Text style={styles.text}><Text style={styles.textBold}>Primary Language:</Text> {item.node.primaryLanguage?.name || "N/A"}</Text>
                             <TouchableOpacity
                                 style={styles.readMore}
@@ -108,6 +109,7 @@ const TrendingRepos = () => {
                         </View>
                     </View>
                 )}
+                contentContainerStyle={{ paddingBottom: 300 }}
             />
         </View>
     );
@@ -186,6 +188,12 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif',
         marginBottom: 5,
         fontWeight: 'bold',
+    },
+    filterRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+        justifyContent: 'space-around',
     },
 });
 
