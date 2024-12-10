@@ -7,7 +7,7 @@ import { ApolloProvider } from '@apollo/client';
 import client from './pages/ApolloClient';
 
 export type RootStackParamList = {
-  TrendingRepos: undefined; 
+  TrendingRepos: undefined;
   RepoDetails: { repo: Repository };
 };
 

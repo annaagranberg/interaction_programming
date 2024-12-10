@@ -64,13 +64,13 @@ const styles = StyleSheet.create({
     },
     container2: {
         marginBottom: 20,
-        alignItems: 'center',  // Centers horizontally
-        justifyContent: 'center',  // Centers vertically within the container
+        alignItems: 'center',  
+        justifyContent: 'center', 
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        textAlign: 'center',  // Centers the text within its own space
+        textAlign: 'center', 
     },
 });
 

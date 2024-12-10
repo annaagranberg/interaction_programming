@@ -28,18 +28,6 @@ const dataLang = [
     { label: "Shell", value: "language:Shell sort:stars" },
     { label: "Objective-C", value: "language:Objective-C sort:stars" },
     { label: "Vue", value: "language:Vue sort:stars" },
-    { label: "CSS", value: "language:CSS sort:stars" },
-    { label: "HTML", value: "language:HTML sort:stars" },
-    { label: "R", value: "language:R sort:stars" },
-    { label: "Scala", value: "language:Scala sort:stars" },
-    { label: "Perl", value: "language:Perl sort:stars" },
-    { label: "Lua", value: "language:Lua sort:stars" },
-    { label: "Assembly", value: "language:Assembly sort:stars" },
-    { label: "PowerShell", value: "language:PowerShell sort:stars" },
-    { label: "Elixir", value: "language:Elixir sort:stars" },
-    { label: "Clojure", value: "language:Clojure sort:stars" },
-    { label: "Haskell", value: "language:Haskell sort:stars" },
-    { label: "Groovy", value: "language:Groovy sort:stars" },
 ];
 
 interface DropdownComponentYearProps {

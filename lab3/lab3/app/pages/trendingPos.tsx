@@ -38,7 +38,6 @@ query GetTrendingRepos($selectedLanguage: String!) {
 }
 `;
 
-
 const TrendingRepos = () => {
 
     type RootStackParamList = {
@@ -64,10 +63,21 @@ const TrendingRepos = () => {
 
     const { loading, error, data } = useQuery(GET_TRENDING_REPOS, {
         variables: {
-            selectedLanguage: `${selectedLanguage} created:>=${selectedYear}-01-01 created:<=${selectedYear}-12-31`,
+            selectedLanguage: `${selectedLanguage} created:<${selectedYear}`,
         },
         fetchPolicy: 'network-only',
     });
+
+    const formatDate = (isoString: string) => {
+        const date = new Date(isoString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
 
 
     if (loading) return <ActivityIndicator size="large" color="black" />;
