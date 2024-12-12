@@ -1,52 +1,58 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { ImagesData } from '../../assets/test/data/imgdb';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const ImageComponent = () => {
-    const [scrollLeft1, setScrollLeft1] = useState(0);
+interface ImageComponentProps {
+    orientation?: 'landscape' | 'portrait' | 'square';
+    smallSize?: 'small' | 'medium' | 'large';
+    thumbnails?: 'above' | 'below';
+    largeImage?: 'no' | 'yes';
+}
+
+const ImageComponent: React.FC<ImageComponentProps> = ({
+    orientation = 'portrait',
+    smallSize = 'medium',
+    thumbnails = 'below',
+    largeImage = 'no',
+}) => {
     const [viewImage, setViewImage] = useState(ImagesData[0].img);
-    const [viewImageAlt, setViewImageAlt] = useState(ImagesData[0].alt);
 
-    const ref1 = useRef<ScrollView>(null);
+    const aspectRatios: Record<string, number> = { landscape: 0.4, portrait: 0.8, square: 1 };
+    const sizeStyles: Record<string, number> = { small: 50, medium: 100, large: 150 };
 
-    const handleScroll1 = (scrollOffset: number) => {
-        if (ref1.current) {
-            const newOffset = scrollLeft1 + scrollOffset;
-            ref1.current.scrollTo({ x: newOffset, animated: true });
-            setScrollLeft1(newOffset);
-        }
-    };
+    const aspectRatio = aspectRatios[orientation];
+    const smallSizeStyle = sizeStyles[smallSize];
+
+    const renderThumbnails = () => (
+        <ScrollView horizontal style={styles.total} showsHorizontalScrollIndicator={false}>
+            {ImagesData.map((image) => (
+                <TouchableOpacity key={image.key} onPress={() => setViewImage(image.img)}>
+                    <Image
+                        source={image.img}
+                        style={{ height: smallSizeStyle, width: smallSizeStyle, ...styles.styledIMG }}
+                    />
+                </TouchableOpacity>
+            ))}
+        </ScrollView>
+    );
+
+    const renderMainImage = () => (
+        <View style={styles.viewImageWrapper}>
+            <Image source={viewImage} style={{ height: width * aspectRatio, ...styles.largeImage }} />
+        </View>
+    );
+
+    if (largeImage === 'no') {
+        return <View style={styles.wrapper}>{renderThumbnails()}</View>;
+    }
 
     return (
         <View style={styles.wrapper}>
-            <TouchableOpacity style={styles.imageButton}> 
-                <View style={styles.viewImageWrapper}>
-                    <Image source={viewImage} style={styles.largeImage} />
-                </View>
-            </TouchableOpacity>
-
-            <ScrollView
-                horizontal
-                ref={ref1}
-                style={styles.total}
-                showsHorizontalScrollIndicator={false}
-                onScroll={(e) => setScrollLeft1(e.nativeEvent.contentOffset.x)}
-                scrollEventThrottle={16}
-            >
-                {ImagesData.map((image) => (
-                    <TouchableOpacity
-                        key={image.key}
-                        onPress={() => {
-                            setViewImage(image.img); // Update view image
-                            setViewImageAlt(image.alt); // Update alt text if needed
-                        }}
-                    >
-                        <Image source={image.img} style={styles.styledIMG} />
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
+            {thumbnails === 'above' && renderThumbnails()}
+            {renderMainImage()}
+            {thumbnails === 'below' && renderThumbnails()}
         </View>
     );
 };
@@ -65,7 +71,6 @@ const styles = StyleSheet.create({
     },
     largeImage: {
         width: '100%',
-        height: height * 0.5,
         marginTop: -4,
         marginBottom: 2,
         borderRadius: 7,
@@ -74,44 +79,13 @@ const styles = StyleSheet.create({
     total: {
         flexDirection: 'row',
         width: '100%',
-        marginTop: 20,
+        marginTop: 50,
+        marginBottom: 50,
     },
     styledIMG: {
         marginHorizontal: 10,
         borderRadius: 7,
-        height: height * 0.1,
-        width: height * 0.1,
         resizeMode: 'cover',
-    },
-    buttonWrapperLeft: {
-        position: 'absolute',
-        top: height * 0.4,
-        left: 10,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonWrapperRight: {
-        position: 'absolute',
-        top: height * 0.4,
-        right: 10,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    arrowText: {
-        fontSize: 20,
-        color: 'black',
-    },
-    imageButton: {
-        width: '100%',
-        height: height * 0.5,
     },
 });
 
