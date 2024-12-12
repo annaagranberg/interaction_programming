@@ -6,10 +6,11 @@ const TestPage = () => {
     return (
         <View style={styles.container}>
             <ImageComponent
-                orientation="portrait"
-                smallSize="large"
-                thumbnails="below"
-                largeImage="yes"
+                orientation="portrait" // landscape, portrait, square
+                smallSize="large" // small, medium, large 
+                thumbnails="below" // above, below
+                largeImage="yes" // no, yes
+                typeLargeImage="rounded" // circle, square, rounded
             />
         </View>
     );
