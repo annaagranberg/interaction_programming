@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { ImagesData } from '../../assets/test/data/imgdb';
 
 const { width } = Dimensions.get('window');
 
 interface ImageComponentProps {
+    imagesData: { img: any; alt: string; key: string }[];
     orientation?: 'landscape' | 'portrait' | 'square';
     smallSize?: 'small' | 'medium' | 'large';
     thumbnails?: 'above' | 'below';
@@ -13,13 +13,18 @@ interface ImageComponentProps {
 }
 
 const ImageComponent: React.FC<ImageComponentProps> = ({
+    imagesData,
     orientation = 'portrait',
     smallSize = 'medium',
     thumbnails = 'below',
     largeImage = 'no',
     typeLargeImage = 'square',
 }) => {
-    const [viewImage, setViewImage] = useState(ImagesData[0].img);
+    const [viewImage, setViewImage] = useState(imagesData[0].img);
+
+    useEffect(() => {
+        setViewImage(imagesData[0].img);
+    }, [imagesData]);
 
     const aspectRatios: Record<string, number> = { landscape: 0.4, portrait: 0.8, square: 1 };
     const sizeStyles: Record<string, number> = { small: 50, medium: 100, large: 150 };
@@ -35,7 +40,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
 
     const renderThumbnails = () => (
         <ScrollView horizontal style={styles.total} showsHorizontalScrollIndicator={false}>
-            {ImagesData.map((image) => (
+            {imagesData.map((image) => (
                 <TouchableOpacity key={image.key} onPress={() => setViewImage(image.img)}>
                     <Image
                         source={image.img}
@@ -82,6 +87,7 @@ const styles = StyleSheet.create({
         width: width,
         position: 'relative',
         paddingBottom: 30,
+        marginTop: 20,
     },
     viewImageWrapper: {
         justifyContent: 'center',
