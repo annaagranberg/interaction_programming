@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
-interface AccordionMenuProps {
+interface AccordionMenuProps { // Define the props for the AccordionMenu.
     children?: React.ReactNode;
     menuItems?: string[];
     onSelect: (item: string) => void;
 }
 
 const AccordionMenu: React.FC<AccordionMenuProps> = ({ children, menuItems = [], onSelect }) => {
-    const [isMenuVisible, setIsMenuVisible] = useState(false);
-    const slideAnim = React.useRef(new Animated.Value(-250)).current; // Menu slides in from the left
+
+    const [isMenuVisible, setIsMenuVisible] = useState(false); // Menu visibility state
+    const slideAnim = React.useRef(new Animated.Value(-250)).current; // Animation state
 
     const toggleMenu = () => {
-        if (isMenuVisible) {
+        if (isMenuVisible) { // If the menu is visible, slide it out of view
             Animated.timing(slideAnim, {
                 toValue: -250,
                 duration: 300,
                 useNativeDriver: true,
             }).start(() => setIsMenuVisible(false));
-        } else {
+        } else { // If the menu is not visible, slide it into view
             setIsMenuVisible(true);
             Animated.timing(slideAnim, {
                 toValue: 0,
@@ -28,34 +29,21 @@ const AccordionMenu: React.FC<AccordionMenuProps> = ({ children, menuItems = [],
         }
     };
 
-    const closeMenu = () => {
-        if (isMenuVisible) {
-            Animated.timing(slideAnim, {
-                toValue: -250,
-                duration: 300,
-                useNativeDriver: true,
-            }).start(() => setIsMenuVisible(false));
-        }
-    };
-
     return (
         <View style={{ flex: 1 }}>
-            {/* Main Content */}
+        
             <View style={{ flex: 1 }}>{children}</View>
 
-            {/* Hamburger Button */}
             <TouchableOpacity onPress={toggleMenu} style={styles.hamburgerButton}>
                 <Text style={styles.hamburgerIcon}>☰</Text>
             </TouchableOpacity>
 
-            {/* Transparent Overlay */}
-            {isMenuVisible && (
-                <TouchableWithoutFeedback onPress={closeMenu}>
+            {isMenuVisible && ( // If the menu is visible, render the overlay
+                <TouchableWithoutFeedback onPress={toggleMenu}>
                     <View style={styles.overlay} />
                 </TouchableWithoutFeedback>
             )}
 
-            {/* Animated Sliding Menu */}
             <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
                 {menuItems.map((item, index) => (
                     <TouchableOpacity key={index} style={styles.menuItem} onPress={() => onSelect(item)}>
@@ -84,8 +72,8 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Slightly transparent background
-        zIndex: 15, // Higher than main content, lower than menu
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        zIndex: 15,
     },
     menuContainer: {
         position: 'absolute',
@@ -95,7 +83,7 @@ const styles = StyleSheet.create({
         height: '100%',
         backgroundColor: '#333',
         padding: 20,
-        zIndex: 20, // Ensures the menu is above the overlay
+        zIndex: 20, 
     },
     menuItem: {
         paddingVertical: 15,
